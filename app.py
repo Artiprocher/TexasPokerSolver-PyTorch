@@ -304,7 +304,7 @@ with st.sidebar:
         total_decks_of_cards = st.number_input("Total Decks of Cards", min_value=1, max_value=100, step=1, value=1)
         num_iterations = st.number_input("Total Iterations", min_value=1, max_value=100, step=1, value=1)
         batch_size = st.number_input("Batch Size (2^n)", min_value=1, max_value=32, step=1, value=20)
-        device = st.selectbox("Device", ["cuda", "mps", "cpu"], index=0))
+        device = st.selectbox("Device", ["cuda", "mps", "cpu"], index=0)
     colors, numbers = [], []
     with st.expander("Cards in your hand", expanded=True):
         for i in [1, 2]:
