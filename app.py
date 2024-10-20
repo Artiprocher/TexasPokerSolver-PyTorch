@@ -282,7 +282,7 @@ class 德州扑克求解器(torch.nn.Module):
         return message
 
 
-def solve(人数, 扑克牌数, num_iterations, batch_size, colors, numbers):
+def solve(device, 人数, 扑克牌数, num_iterations, batch_size, colors, numbers):
     手上的牌, 场上的牌 = [], []
     for i, color, number in zip(range(len(colors)), colors, numbers):
         if color == "?" or number == "?":
@@ -291,7 +291,7 @@ def solve(人数, 扑克牌数, num_iterations, batch_size, colors, numbers):
             手上的牌.append((color, number))
         else:
             场上的牌.append((color, number))
-    solver = 德州扑克求解器(人数, 扑克牌数)
+    solver = 德州扑克求解器(人数, 扑克牌数, device=device)
     p_our = solver(num_iterations, batch_size, 已有的牌 = 手上的牌 + 场上的牌)
     p_other = solver(num_iterations, batch_size, 已有的牌 = 场上的牌)
     win, tie, loss = solver.计算胜率(p_our, p_other)
@@ -304,6 +304,7 @@ with st.sidebar:
         total_decks_of_cards = st.number_input("Total Decks of Cards", min_value=1, max_value=100, step=1, value=1)
         num_iterations = st.number_input("Total Iterations", min_value=1, max_value=100, step=1, value=1)
         batch_size = st.number_input("Batch Size (2^n)", min_value=1, max_value=32, step=1, value=20)
+        device = st.selectbox("Device", ["cuda", "mps", "cpu"], index=0))
     colors, numbers = [], []
     with st.expander("Cards in your hand", expanded=True):
         for i in [1, 2]:
@@ -321,7 +322,7 @@ with st.sidebar:
                 numbers.append(st.selectbox(f"Number {i}", ["?", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"], index=0))
 run = st.button("Run", type="primary")
 if run:
-    win, tie, loss, p_our, p_other = solve(total_players, total_decks_of_cards, num_iterations, 2**batch_size, colors, numbers)
+    win, tie, loss, p_our, p_other = solve(device, total_players, total_decks_of_cards, num_iterations, 2**batch_size, colors, numbers)
     
     st.markdown("### Results")
     with st.expander("Results", expanded=True):
